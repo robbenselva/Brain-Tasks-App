@@ -9,27 +9,21 @@ env:
 phases:
   pre_build:
     commands:
-      - "echo Logging in to Amazon ECR..."
-      - "aws --version"
-      - "aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 966605441979.dkr.ecr.ap-south-1.amazonaws.com"
+      - echo Logging in to ECR...
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 966605441979.dkr.ecr.ap-south-1.amazonaws.com
   build:
     commands:
-      - "echo Building the Docker image..."
-      - "docker build -t brain-tasks-app ."
-      - "docker tag brain-tasks-app:latest $ECR_REPO:$IMAGE_TAG"
-      - "docker push $ECR_REPO:$IMAGE_TAG"
+      - echo Build and push image...
+      - docker build -t brain-tasks-app .
+      - docker tag brain-tasks-app:latest $ECR_REPO:$IMAGE_TAG
+      - docker push $ECR_REPO:$IMAGE_TAG
   post_build:
     commands:
-      - "echo Configure kubectl"
-      - "aws eks update-kubeconfig --name brain-tasks-cluster --region $AWS_REGION"
-      - "echo Replace image in deployment manifest and apply"
-      - "sed -i \"s|image: .*|image: $ECR_REPO:$IMAGE_TAG|g\" deployment.yaml"
-      - "kubectl apply -f deployment.yaml"
-      - "kubectl apply -f service.yaml"
+      - echo "Configure kubectl"
+      - aws eks update-kubeconfig --name brain-tasks-cluster --region $AWS_REGION
+      - echo "Replace image in deployment manifest and apply"
+      - "sed -i \ "s|image: .*|image: $ECR_REPO:$IMAGE_TAG|g\" deployment.yaml"
+      - kubectl apply -f deployment.yaml
+      - kubectl apply -f service.yaml
 
-artifacts:
-  files:
-    - imagedefinitions.json
-    - deployment.yaml
-    - service.yaml
 
