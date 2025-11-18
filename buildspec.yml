@@ -11,6 +11,7 @@ phases:
     commands:
       - echo Logging in to ECR...
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 966605441979.dkr.ecr.ap-south-1.amazonaws.com
+      - aws eks update-kubeconfig --name brain-tasks-cluster --region $AWS_REGION
   build:
     commands:
       - echo Build and push image...
@@ -20,7 +21,6 @@ phases:
   post_build:
     commands:
       - echo "Configueere kubectl"
-      - aws eks update-kubeconfig --name brain-tasks-cluster --region $AWS_REGION
       - echo "Replace image in deployment manifest and apply"
       - "sed -i'' -e \"s|image: .*|image: $ECR_REPO:$IMAGE_TAG|g\" deployment.yaml"
       - kubectl apply -f deployment.yaml --validate=false
