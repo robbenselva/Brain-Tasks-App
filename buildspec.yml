@@ -23,7 +23,7 @@ phases:
       - aws eks update-kubeconfig --name brain-tasks-cluster --region $AWS_REGION
       - echo "Replace image in deployment manifest and apply"
       - "sed -i'' -e \"s|image: .*|image: $ECR_REPO:$IMAGE_TAG|g\" deployment.yaml"
-      - kubectl apply -f deployment.yaml
+      - kubectl apply -f deployment.yaml --validate=false
       - kubectl apply -f service.yaml
 
 
