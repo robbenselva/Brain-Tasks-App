@@ -8,7 +8,7 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY dist/ /usr/share/nginx/html/
 
 # Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY dist/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 3000
 EXPOSE 3000
