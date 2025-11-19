@@ -1,5 +1,5 @@
 # Use official nginx image
-From public.ecr.aws/nginx/nginx:alpine
+FROM public.ecr.aws/nginx/nginx:alpine
 
 # Remove default nginx website
 RUN rm -rf /usr/share/nginx/html/*
